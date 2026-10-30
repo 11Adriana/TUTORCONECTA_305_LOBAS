@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calificaciones - TutorConecta Lobas Azules</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { display: flex; height: 100vh; background-color: #E4F2FF; }
+
+        .sidebar { width: 220px; background-color: #123F78; color: white; display: flex; flex-direction: column; padding: 20px 0; }
+        .sidebar .brand { font-size: 18px; font-weight: 600; padding: 0 20px 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .sidebar nav { margin-top: 15px; display: flex; flex-direction: column; }
+        .sidebar nav a { display: flex; align-items: center; gap: 10px; padding: 12px 20px; color: white; text-decoration: none; font-size: 13px; }
+        .sidebar nav a:hover, .sidebar nav a.active { background-color: #347FE3; }
+
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
+        header { background-color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .container { padding: 30px; }
+
+        h2 { color: #123F78; font-size: 20px; margin-bottom: 5px; }
+        .hijo-label { font-size: 14px; color: #555; margin-bottom: 20px; font-weight: 600; }
+
+        .card-docente { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(18,63,120,0.06); }
+        .card-docente select, .card-docente input, .card-docente textarea { padding: 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; margin-right: 10px; margin-bottom: 8px; }
+        .btn { background: #347FE3; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn:hover { background: #123F78; }
+
+        .table-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(18,63,120,0.06); margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 10px 12px; text-align: center; font-size: 13px; }
+        th { background-color: #E4F2FF; color: #123F78; font-weight: 600; }
+        tr:nth-child(even) { background-color: #f9fbfd; }
+        tr { border-bottom: 1px solid #eee; }
+
+        .motivation-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(18,63,120,0.06); }
+        .motivation-card textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; margin-top: 8px; font-size: 13px; outline: none; }
+        
+        .fortalezas-card { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(18,63,120,0.06); }
+        .fortalezas-card input[type="text"] { padding: 8px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; outline: none; flex: 1; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="brand">TutorConecta</div>
+        <nav>
+            <a href="/bienvenida?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}">Inicio</a>
+            <a href="/calificaciones?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}" class="active">Calificaciones</a>
+            <a href="/tareas?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}">Tareas</a>
+            <a href="/asistencia?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}">Asistencia</a>
+            <a href="/avisos?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}">Avisos</a>
+            <a href="/calendario?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}">Calendario</a>
+            <a href="/" style="margin-top: 30px; color: #ff9999;">Cerrar sesion</a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <span style="font-size: 20px; cursor: pointer; color: #123F78;">Menu</span>
+            <div style="font-size: 14px; color: #123F78; font-weight: 600;">Rol: {{ tipo }}</div>
+        </header>
+
+        <div class="container">
+            <h2>Gestion de Calificaciones y Observaciones</h2>
+            <div class="hijo-label">
+                {% if tipo == 'Padre de familia' %}
+                    Boleta oficial de tu hijo(a): <span style="color: #347FE3;">{{ hijo }}</span>
+                {% elif tipo == 'Docente' %}
+                    Panel Docente - Asignatura: <span style="color: #347FE3; font-weight: bold;">{{ materia }}</span>
+                {% else %}
+                    Consulta de calificaciones: <span style="color: #347FE3;">{{ hijo }}</span>
+                {% endif %}
+            </div>
+
+            <!-- TARJETA DE FORTALEZAS SOCIOEMOCIONALES EDITABLES PARA EL PADRE -->
+            <div class="fortalezas-card">
+                <h3 style="color: #123F78; font-size: 15px; margin-bottom: 12px;">Fortalezas Socioemocionales de tu Hijo(a)</h3>
+
+                {% if tipo == 'Padre de familia' %}
+                <!-- Si es Padre de familia: Formulario interactivo para escribir/editar las 3 fortalezas -->
+                <form action="/socioemocional?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}" method="POST" style="display: flex; flex-direction: column; gap: 10px;">
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <input type="text" name="f1" value="{{ fortalezas[0] if fortalezas|length > 0 else '' }}" placeholder="Fortaleza 1 (ej. Dedicada)" required>
+                        <input type="text" name="f2" value="{{ fortalezas[1] if fortalezas|length > 1 else '' }}" placeholder="Fortaleza 2 (ej. Entusiasta)" required>
+                        <input type="text" name="f3" value="{{ fortalezas[2] if fortalezas|length > 2 else '' }}" placeholder="Fortaleza 3 (ej. Puntual)" required>
+                    </div>
+                    <button type="submit" class="btn" style="width: fit-content; margin-top: 5px;">Guardar Fortalezas</button>
+                </form>
+
+                {% else %}
+                <!-- Si es Maestro, Alumno o Admin: Solo lectura con badges de colores -->
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    {% if fortalezas and fortalezas|length > 0 %}
+                        {% for fort in fortalezas %}
+                            <span style="background-color: #E4F2FF; color: #347FE3; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600;">{{ fort }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <span style="color: #777; font-size: 12px;">Aún no se han registrado fortalezas socioemocionales.</span>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+
+            {% if tipo == 'Docente' %}
+            <div class="card-docente">
+                <h3>Registrar Calificacion y Observaciones de Desempeno</h3>
+                <form method="GET" action="/calificaciones" style="margin: 10px 0 15px 0;">
+                    <input type="hidden" name="usuario" value="{{ usuario }}">
+                    <input type="hidden" name="tipo" value="{{ tipo }}">
+                    <input type="hidden" name="materia" value="{{ materia }}">
+                    <label style="font-size: 13px; font-weight: 600;">Seleccionar Alumno:</label>
+                    <select name="hijo" onchange="this.form.submit()">
+                        {% for alu in alumnos_lista %}
+                            <option value="{{ alu }}" {% if alu == hijo %}selected{% endif %}>{{ alu }}</option>
+                        {% endfor %}
+                    </select>
+                </form>
+
+                <form action="/calificaciones?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}" method="POST" style="margin-top: 8px; display: flex; flex-direction: column; gap: 10px;">
+                    <input type="hidden" name="alumno_obj" value="{{ hijo }}">
+                    
+                    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                        <input type="text" value="{{ materia }}" readonly style="background-color: #f1f5f9; font-weight: 600; color: #123F78; width: 220px;">
+
+                        <select name="parcial_sel">
+                            <option value="p1">1er Parcial</option>
+                            <option value="p2">2do Parcial</option>
+                            <option value="p3">3er Parcial</option>
+                        </select>
+
+                        <input type="number" step="0.1" name="nota" placeholder="Calificacion (0-10)" min="0" max="10" style="width: 160px;">
+                    </div>
+
+                    <div>
+                        <textarea name="observacion" rows="2" placeholder="Anadir observacion de desempeno para el alumno..." style="width: 100%; font-size: 13px; padding: 8px;"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn" style="width: fit-content;">Guardar Evaluaciones</button>
+                </form>
+            </div>
+            {% endif %}
+
+            <div class="table-card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="text-align: left;">Materia</th>
+                            <th>1er Parcial</th>
+                            <th>2do Parcial</th>
+                            <th>3er Parcial</th>
+                            <th>Promedio</th>
+                            <th style="text-align: left;">Observaciones del Docente</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if calificaciones|length == 0 %}
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: #777; padding: 20px;">
+                                Aún no hay calificaciones registradas para este alumno.
+                            </td>
+                        </tr>
+                        {% else %}
+                            {% for item in calificaciones %}
+                            <tr>
+                                <td style="text-align: left; font-weight: 600; color: #333;">{{ item.materia }}</td>
+                                <td>{{ item.p1 }}</td>
+                                <td>{{ item.p2 }}</td>
+                                <td>{{ item.p3 }}</td>
+                                <td style="font-weight: 600; color: #123F78;">{{ item.promedio }}</td>
+                                <td style="text-align: left; font-size: 12px; color: #555; font-style: italic;">
+                                    {{ item.observacion if item.observacion else 'Sin observaciones.' }}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% if tipo == 'Padre de familia' %}
+            <div class="motivation-card">
+                <h3>Enviar Mensaje de Motivacion a tu Hijo(a)</h3>
+                <form action="/calificaciones?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}" method="POST">
+                    <textarea name="mensaje_motivacion" rows="3" placeholder="Escribe un mensaje de animo..." required>{{ mensaje }}</textarea>
+                    <button type="submit" class="btn" style="margin-top: 10px;">Enviar Mensaje</button>
+                </form>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+</body>
+</html>

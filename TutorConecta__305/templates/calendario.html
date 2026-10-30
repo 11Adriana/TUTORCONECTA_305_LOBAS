@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario de eventos - TutorConecta</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { display: flex; height: 100vh; background-color: #E4F2FF; }
+        
+        .sidebar { width: 220px; background-color: #123F78; color: white; display: flex; flex-direction: column; padding: 20px 0; }
+        .sidebar .brand { font-size: 18px; font-weight: 600; padding: 0 20px 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .sidebar nav { margin-top: 15px; display: flex; flex-direction: column; }
+        .sidebar nav a { display: flex; align-items: center; gap: 10px; padding: 12px 20px; color: white; text-decoration: none; font-size: 13px; }
+        .sidebar nav a:hover, .sidebar nav a.active { background-color: #347FE3; }
+
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
+        header { background-color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .user-profile { font-size: 14px; color: #123F78; font-weight: 600; }
+        
+        .container { padding: 30px; max-width: 700px; margin: 0 auto; }
+        h2 { color: #123F78; font-size: 20px; margin-bottom: 15px; }
+
+        .cal-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 6px rgba(18,63,120,0.04); margin-bottom: 20px; }
+        .cal-header { display: flex; justify-content: space-between; align-items: center; font-weight: 600; color: #123F78; margin-bottom: 15px; font-size: 15px; }
+        
+        .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center; font-size: 12px; }
+        .day-name { font-weight: 600; color: #123F78; padding-bottom: 8px; }
+        .day-cell { padding: 10px 0; border-radius: 6px; background-color: #f8fafd; color: #333; position: relative; }
+        .day-cell.evento-dia { background-color: #347FE3; color: white; font-weight: 600; box-shadow: 0 2px 4px rgba(52,127,227,0.3); }
+
+        .eventos-proximos { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 6px rgba(18,63,120,0.04); }
+        .eventos-proximos h3 { color: #123F78; font-size: 15px; margin-bottom: 12px; }
+        
+        .evento-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 13px; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; background-color: #347FE3; }
+
+        .form-evento { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 6px rgba(18,63,120,0.04); margin-bottom: 20px; }
+        .form-evento input, .form-evento select { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="brand">TutorConecta</div>
+        <nav>
+            <a href="/bienvenida?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}">Inicio</a>
+            <a href="/calificaciones?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}">Calificaciones</a>
+            <a href="/tareas?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}">Tareas</a>
+            <a href="/asistencia?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}">Asistencia</a>
+            <a href="/avisos?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}">Avisos</a>
+            <a href="/calendario?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}" class="active">Calendario</a>
+            <a href="/" style="margin-top: 30px; color: #ff9999;">Cerrar sesion</a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <span style="font-size: 20px; color: #123F78;">Menu</span>
+            <div class="user-profile">Rol: {{ tipo }}</div>
+        </header>
+
+        <div class="container">
+            <h2>Calendario de Eventos</h2>
+
+            {% if tipo == 'Administrativo' or tipo == 'Docente' %}
+            <div class="form-evento">
+                <h3 style="color: #123F78; font-size: 15px; margin-bottom: 10px;">Registrar Fecha Importante</h3>
+                <form method="POST">
+                    <input type="hidden" name="accion" value="crear">
+                    <input type="text" name="evento" placeholder="Nombre del evento o examen" required>
+                    <input type="date" name="fecha" required>
+                    <label style="font-size: 12px; font-weight: 600; color: #123F78;">Estatus del Evento:</label>
+                    <select name="estado" required style="margin-top: 4px; margin-bottom: 10px;">
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="Realizada">Realizada / Concluida</option>
+                    </select>
+                    <button type="submit" style="background-color: #123F78; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600;">Guardar Evento</button>
+                </form>
+            </div>
+            {% endif %}
+
+            <div class="cal-card">
+                <div class="cal-header">
+                    <span>&lt;</span>
+                    <span>Octubre 2026</span>
+                    <span>&gt;</span>
+                </div>
+
+                <div class="days-grid">
+                    <div class="day-name">Lun</div>
+                    <div class="day-name">Mar</div>
+                    <div class="day-name">Mie</div>
+                    <div class="day-name">Jue</div>
+                    <div class="day-name">Vie</div>
+                    <div class="day-name">Sab</div>
+                    <div class="day-name">Dom</div>
+                    
+                    <div class="day-cell" style="color: #bbb;">28</div>
+                    <div class="day-cell" style="color: #bbb;">29</div>
+                    <div class="day-cell" style="color: #bbb;">30</div>
+                    <div class="day-cell">1</div>
+                    <div class="day-cell">2</div>
+                    <div class="day-cell">3</div>
+                    <div class="day-cell">4</div>
+                    <div class="day-cell">5</div>
+                    <div class="day-cell">6</div>
+                    <div class="day-cell">7</div>
+                    <div class="day-cell">8</div>
+                    <div class="day-cell">9</div>
+                    <div class="day-cell">10</div>
+                    <div class="day-cell">11</div>
+                    <div class="day-cell">12</div>
+                    <div class="day-cell">13</div>
+                    <div class="day-cell">14</div>
+                    <div class="day-cell">15</div>
+                    <div class="day-cell">16</div>
+                    <div class="day-cell">17</div>
+                    <div class="day-cell">18</div>
+                    <div class="day-cell">19</div>
+                    <div class="day-cell">20</div>
+                    <div class="day-cell">21</div>
+                    <div class="day-cell">22</div>
+                    <div class="day-cell">23</div>
+                    <div class="day-cell">24</div>
+                    <div class="day-cell">25</div>
+                    <div class="day-cell {% if '2026-10-26' in dias_con_eventos %}evento-dia{% endif %}">26</div>
+                    <div class="day-cell {% if '2026-10-27' in dias_con_eventos %}evento-dia{% endif %}">27</div>
+                    <div class="day-cell {% if '2026-10-28' in dias_con_eventos %}evento-dia{% endif %}">28</div>
+                    <div class="day-cell {% if '2026-10-29' in dias_con_eventos %}evento-dia{% endif %}">29</div>
+                    <div class="day-cell {% if '2026-10-30' in dias_con_eventos %}evento-dia{% endif %}">30</div>
+                    <div class="day-cell {% if '2026-10-31' in dias_con_eventos %}evento-dia{% endif %}">31</div>
+                    <div class="day-cell" style="color: #bbb;">1</div>
+                </div>
+            </div>
+
+            <div class="eventos-proximos">
+                <h3>Listado de Eventos</h3>
+                {% for item in calendario %}
+                <div class="evento-row">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div class="dot"></div>
+                        <span style="font-weight: 600;">{{ item.fecha }}</span>
+                        <span>- {{ item.evento }}</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        {% if item.get('estado') == 'Realizada' %}
+                            <span style="background-color: #d4edda; color: #155724; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600;">Realizada</span>
+                        {% else %}
+                            <span style="background-color: #fff3cd; color: #856404; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600;">Pendiente</span>
+                        {% endif %}
+
+                        {% if tipo == 'Administrativo' or tipo == 'Docente' %}
+                        <form method="POST" style="display: flex; gap: 5px; align-items: center;">
+                            <input type="hidden" name="accion" value="actualizar">
+                            <input type="hidden" name="evento_id" value="{{ item.id }}">
+                            <select name="nuevo_estado" onchange="this.form.submit()" style="padding: 4px; font-size: 11px; border-radius: 4px; border: 1px solid #ccc;">
+                                <option value="" disabled selected>Cambiar...</option>
+                                <option value="Pendiente">Pendiente</option>
+                                <option value="Realizada">Realizada</option>
+                            </select>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

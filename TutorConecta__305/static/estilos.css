@@ -1,0 +1,102 @@
+*/
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    display: flex;
+    min-height: 100vh;
+    background-color: #eef5fc;
+    color: #333;
+    flex-direction: row; /* Por defecto en PC: menú a la izquierda */
+}
+
+/* ==========================================
+   2. BARRA LATERAL (MENÚ) - PANTALLA GRANDE / PC
+   ========================================== */
+.sidebar, nav, .menu-lateral {
+    width: 250px;
+    background: linear-gradient(180deg, #0d3b66 0%, #1d4e89 100%);
+    color: white;
+    padding: 20px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.sidebar h2, .menu-lateral h2 {
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+    color: #ffffff;
+}
+
+.sidebar a, .menu-lateral a {
+    color: #d0e1f9;
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+    transition: background 0.3s, color 0.3s;
+    display: block;
+}
+
+.sidebar a:hover, .menu-lateral a:hover, .sidebar a.active {
+    background-color: #286096;
+    color: #ffffff;
+}
+
+/* ==========================================
+   3. CONTENIDO PRINCIPAL
+   ========================================== */
+.main-content, .contenido, main {
+    flex: 1;
+    padding: 25px;
+    overflow-x: auto; /* Evita desbordamiento de tablas o calendarios */
+}
+
+/* Ajustes para tarjetas y calendarios */
+.card, .container, .calendar-container {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    max-width: 100%;
+    margin-bottom: 20px;
+}
+
+/* ==========================================
+   4. ADAPTACIÓN PARA CELULARES (RESPONSIVE)
+   ========================================== */
+@media (max-width: 768px) {
+    /* Cambia la estructura de lado a lado a arriba y abajo */
+    body {
+        flex-direction: column;
+    }
+
+    /* El menú pasa a la parte superior */
+    .sidebar, nav, .menu-lateral {
+        width: 100%;
+        padding: 15px;
+        position: relative;
+    }
+
+    /* Los enlaces del menú se acomodan en horizontal o cuadrícula */
+    .sidebar a, .menu-lateral a {
+        padding: 8px 12px;
+        font-size: 0.95rem;
+    }
+
+    /* Reducción de márgenes en el contenido para aprovechar espacio */
+    .main-content, .contenido, main {
+        padding: 15px 10px;
+    }
+
+    /* Ajuste de tablas y calendarios para que no se corten */
+    table, .calendar {
+        width: 100% !important;
+        font-size: 0.85rem;
+    }
+}

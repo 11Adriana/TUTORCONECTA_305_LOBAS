@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avisos escolares - TutorConecta</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { display: flex; height: 100vh; background-color: #E4F2FF; }
+        
+        .sidebar { width: 220px; background-color: #123F78; color: white; display: flex; flex-direction: column; padding: 20px 0; }
+        .sidebar .brand { font-size: 18px; font-weight: 600; padding: 0 20px 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .sidebar nav { margin-top: 15px; display: flex; flex-direction: column; }
+        .sidebar nav a { display: flex; align-items: center; gap: 10px; padding: 12px 20px; color: white; text-decoration: none; font-size: 13px; }
+        .sidebar nav a:hover, .sidebar nav a.active { background-color: #347FE3; }
+
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
+        header { background-color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .user-profile { font-size: 14px; color: #123F78; font-weight: 600; }
+        
+        .container { padding: 30px; }
+        h2 { color: #123F78; font-size: 20px; margin-bottom: 15px; }
+
+        .search-bar { display: flex; align-items: center; background: white; border: 1px solid #ccc; border-radius: 8px; padding: 8px 15px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .search-bar input { border: none; outline: none; width: 100%; font-size: 13px; color: #555; }
+
+        .aviso-card { background: white; padding: 15px 20px; border-radius: 12px; margin-bottom: 12px; box-shadow: 0 2px 6px rgba(18,63,120,0.04); display: flex; justify-content: space-between; align-items: flex-start; border: 1px solid #eaeaea; }
+        .aviso-content h4 { color: #123F78; font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+        .aviso-content p { color: #555; font-size: 13px; }
+        .aviso-fecha { font-size: 11px; color: #888; white-space: nowrap; margin-left: 15px; }
+
+        .form-admin { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 6px rgba(18,63,120,0.04); }
+        .form-admin input, .form-admin textarea { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="brand">TutorConecta</div>
+        <nav>
+            <a href="/bienvenida?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}">Inicio</a>
+            <a href="/calificaciones?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}">Calificaciones</a>
+            <a href="/tareas?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}">Tareas</a>
+            <a href="/asistencia?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}">Asistencia</a>
+            <a href="/avisos?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}" class="active">Avisos</a>
+            <a href="/calendario?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}">Calendario</a>
+            <a href="/" style="margin-top: 30px; color: #ff9999;">Cerrar sesion</a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <span style="font-size: 20px; color: #123F78;">Menu</span>
+            <div class="user-profile">Rol: {{ tipo }}</div>
+        </header>
+
+        <div class="container">
+            <h2>Avisos escolares</h2>
+
+            {% if tipo == 'Administrativo' %}
+            <div class="form-admin">
+                <h3 style="color: #123F78; font-size: 15px; margin-bottom: 10px;">Publicar Nuevo Aviso (HU-08)</h3>
+                <form method="POST">
+                    <input type="text" name="titulo" placeholder="Titulo del aviso" required>
+                    <textarea name="contenido" rows="3" placeholder="Redacta el aviso escolar..." required></textarea>
+                    <button type="submit" style="background-color: #123F78; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600;">Publicar</button>
+                </form>
+            </div>
+            {% endif %}
+
+            <div class="search-bar">
+                <input type="text" placeholder="Buscar aviso...">
+            </div>
+
+            <div>
+                {% for aviso in avisos %}
+                <div class="aviso-card">
+                    <div class="aviso-content">
+                        <h4>{{ aviso.titulo }}</h4>
+                        <p>{{ aviso.contenido }}</p>
+                    </div>
+                    <div class="aviso-fecha">Reciente</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

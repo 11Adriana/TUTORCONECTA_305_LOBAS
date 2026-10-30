@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asistencia - TutorConecta Lobas Azules</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { display: flex; height: 100vh; background-color: #E4F2FF; }
+
+        .sidebar { width: 220px; background-color: #123F78; color: white; display: flex; flex-direction: column; padding: 20px 0; }
+        .sidebar .brand { font-size: 18px; font-weight: 600; padding: 0 20px 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .sidebar nav { margin-top: 15px; display: flex; flex-direction: column; }
+        .sidebar nav a { display: flex; align-items: center; gap: 10px; padding: 12px 20px; color: white; text-decoration: none; font-size: 13px; }
+        .sidebar nav a:hover, .sidebar nav a.active { background-color: #347FE3; }
+
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
+        header { background-color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .container { padding: 30px; }
+
+        h2 { color: #123F78; font-size: 20px; margin-bottom: 5px; }
+        .hijo-label { font-size: 14px; color: #555; margin-bottom: 20px; font-weight: 600; }
+
+        .card-admin { background: white; padding: 20px; border-radius: 12px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(18,63,120,0.06); }
+        .card-admin select, .card-admin input { padding: 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; margin-right: 10px; margin-bottom: 8px; }
+        .btn { background: #347FE3; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn:hover { background: #123F78; }
+
+        .calendar-section { display: flex; gap: 30px; flex-wrap: wrap; align-items: flex-start; margin-bottom: 30px; }
+        .calendar-card { background: white; padding: 20px; border-radius: 12px; width: 360px; box-shadow: 0 2px 8px rgba(18,63,120,0.06); }
+        .cal-header { display: flex; justify-content: space-between; align-items: center; font-weight: 600; color: #123F78; margin-bottom: 15px; font-size: 14px; }
+        .days-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; text-align: center; font-size: 12px; }
+        .day-name { font-weight: 600; color: #123F78; padding-bottom: 5px; }
+        .day-cell { padding: 10px; border-radius: 6px; background-color: #f8fafd; color: #333; }
+        
+        .Asistencia-dia { background-color: #a8e6cf !important; color: #117a4b; font-weight: 600; }
+        .Falta-dia { background-color: #ff8b94 !important; color: #a81c24; font-weight: 600; }
+        .Retardo-dia { background-color: #ffd3b6 !important; color: #b25900; font-weight: 600; }
+
+        .legend { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(18,63,120,0.06); display: flex; flex-direction: column; justify-content: center; gap: 12px; font-size: 13px; height: fit-content; min-width: 180px; }
+        .legend-item { display: flex; align-items: center; gap: 10px; font-weight: 600; color: #444; }
+        .dot { width: 14px; height: 14px; border-radius: 50%; }
+
+        .table-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(18,63,120,0.06); }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 10px 12px; text-align: center; font-size: 13px; }
+        th { background-color: #E4F2FF; color: #123F78; font-weight: 600; }
+        tr:nth-child(even) { background-color: #f9fbfd; }
+        tr { border-bottom: 1px solid #eee; }
+
+        .badge { padding: 4px 10px; border-radius: 5px; color: white; font-weight: 600; font-size: 11px; }
+        .Asistencia { background-color: #28a745; }
+        .Falta { background-color: #dc3545; }
+        .Retardo { background-color: #ffc107; color: black; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="brand">TutorConecta</div>
+        <nav>
+            <a href="/bienvenida?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}">Inicio</a>
+            <a href="/calificaciones?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}">Calificaciones</a>
+            <a href="/tareas?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}">Tareas</a>
+            <a href="/asistencia?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}" class="active">Asistencia</a>
+            <a href="/avisos?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}">Avisos</a>
+            <a href="/calendario?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}">Calendario</a>
+            <a href="/" style="margin-top: 30px; color: #ff9999;">Cerrar sesion</a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <span style="font-size: 20px; cursor: pointer; color: #123F78;">Menu</span>
+            <div style="font-size: 14px; color: #123F78; font-weight: 600;">Rol: {{ tipo }}</div>
+        </header>
+
+        <div class="container">
+            <h2>Control de Asistencias, Faltas y Retardos</h2>
+            <div class="hijo-label">
+                {% if tipo == 'Padre de familia' or tipo == 'Alumno' %}
+                    Historial de asistencias de: <span style="color: #347FE3;">{{ hijo }}</span>
+                {% else %}
+                    Panel de Registro de Asistencia Escolar - Alumno: <span style="color: #347FE3; font-weight: bold;">{{ hijo }}</span>
+                {% endif %}
+            </div>
+
+            {% if tipo == 'Administrativo' or tipo == 'Docente' %}
+            <div class="card-admin">
+                <h3>Pasar Lista / Registrar Asistencia Diaria (HU-06)</h3>
+                
+                <form method="GET" action="/asistencia" style="margin: 10px 0 15px 0; display: flex; gap: 8px; align-items: center;">
+                    <input type="hidden" name="usuario" value="{{ usuario }}">
+                    <input type="hidden" name="tipo" value="{{ tipo }}">
+                    <label style="font-size: 13px; font-weight: 600;">Seleccionar Alumno:</label>
+                    <select name="alumno_sel" onchange="this.form.submit()">
+                        {% for alu in alumnos_lista %}
+                            <option value="{{ alu }}" {% if alu == hijo %}selected{% endif %}>{{ alu }}</option>
+                        {% endfor %}
+                    </select>
+                </form>
+
+                <form action="/asistencia?usuario={{ usuario }}&tipo={{ tipo }}" method="POST" style="margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                    <input type="hidden" name="alumno_sel" value="{{ hijo }}">
+                    <input type="date" name="fecha_sel" required>
+                    <select name="estado_sel" required>
+                        <option value="" disabled selected>Estado</option>
+                        <option value="Asistencia">Asistencia</option>
+                        <option value="Falta">Falta</option>
+                        <option value="Retardo">Retardo</option>
+                    </select>
+                    <button type="submit" class="btn">Guardar Registro</button>
+                </form>
+            </div>
+            {% endif %}
+
+            <div class="calendar-section">
+                <div class="calendar-card">
+                    <div class="cal-header">
+                        <span>&lt;</span>
+                        <span>Octubre 2026</span>
+                        <span>&gt;</span>
+                    </div>
+
+                    <div class="days-grid">
+                        <div class="day-name">Lun</div>
+                        <div class="day-name">Mar</div>
+                        <div class="day-name">Mie</div>
+                        <div class="day-name">Jue</div>
+                        <div class="day-name">Vie</div>
+                        
+                        <div class="day-cell"></div>
+                        <div class="day-cell"></div>
+                        <div class="day-cell {{ mapa_asistencias.get('1', '') }}-dia">1</div>
+                        <div class="day-cell {{ mapa_asistencias.get('2', '') }}-dia">2</div>
+                        <div class="day-cell {{ mapa_asistencias.get('3', '') }}-dia">3</div>
+
+                        <div class="day-cell {{ mapa_asistencias.get('6', '') }}-dia">6</div>
+                        <div class="day-cell {{ mapa_asistencias.get('7', '') }}-dia">7</div>
+                        <div class="day-cell {{ mapa_asistencias.get('8', '') }}-dia">8</div>
+                        <div class="day-cell {{ mapa_asistencias.get('9', '') }}-dia">9</div>
+                        <div class="day-cell {{ mapa_asistencias.get('10', '') }}-dia">10</div>
+
+                        <div class="day-cell {{ mapa_asistencias.get('13', '') }}-dia">13</div>
+                        <div class="day-cell {{ mapa_asistencias.get('14', '') }}-dia">14</div>
+                        <div class="day-cell {{ mapa_asistencias.get('15', '') }}-dia">15</div>
+                        <div class="day-cell {{ mapa_asistencias.get('16', '') }}-dia">16</div>
+                        <div class="day-cell {{ mapa_asistencias.get('17', '') }}-dia">17</div>
+
+                        <div class="day-cell {{ mapa_asistencias.get('20', '') }}-dia">20</div>
+                        <div class="day-cell {{ mapa_asistencias.get('21', '') }}-dia">21</div>
+                        <div class="day-cell {{ mapa_asistencias.get('22', '') }}-dia">22</div>
+                        <div class="day-cell {{ mapa_asistencias.get('23', '') }}-dia">23</div>
+                        <div class="day-cell {{ mapa_asistencias.get('24', '') }}-dia">24</div>
+
+                        <div class="day-cell {{ mapa_asistencias.get('27', '') }}-dia">27</div>
+                        <div class="day-cell {{ mapa_asistencias.get('28', '') }}-dia">28</div>
+                        <div class="day-cell {{ mapa_asistencias.get('29', '') }}-dia">29</div>
+                        <div class="day-cell {{ mapa_asistencias.get('30', '') }}-dia">30</div>
+                        <div class="day-cell {{ mapa_asistencias.get('31', '') }}-dia">31</div>
+                    </div>
+                </div>
+
+                <div class="legend">
+                    <div class="legend-item"><div class="dot" style="background-color: #a8e6cf;"></div> Asistencia</div>
+                    <div class="legend-item"><div class="dot" style="background-color: #ff8b94;"></div> Falta</div>
+                    <div class="legend-item"><div class="dot" style="background-color: #ffd3b6;"></div> Retardo</div>
+                </div>
+            </div>
+
+            <div class="table-card">
+                <h3 style="color: #123F78; font-size: 15px; margin-bottom: 12px;">Historial de Registros de: <span style="color: #347FE3;">{{ hijo }}</span></h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Alumno</th>
+                            <th>Fecha</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if asistencias %}
+                            {% for item in asistencias %}
+                            <tr>
+                                <td style="font-weight: 600; color: #333;">{{ item.alumno }}</td>
+                                <td>{{ item.fecha }}</td>
+                                <td><span class="badge {{ item.estado }}">{{ item.estado }}</span></td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="3" style="color: #777; padding: 15px;">Sin asistencias registradas aun.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>

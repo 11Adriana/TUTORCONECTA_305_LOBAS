@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Principal - TutorConecta</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { display: flex; height: 100vh; background-color: #E4F2FF; }
+        
+        .sidebar { width: 220px; background-color: #123F78; color: white; display: flex; flex-direction: column; padding: 20px 0; }
+        .sidebar .brand { font-size: 18px; font-weight: 600; padding: 0 20px 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .sidebar nav { margin-top: 15px; display: flex; flex-direction: column; }
+        .sidebar nav a { display: flex; align-items: center; gap: 10px; padding: 12px 20px; color: white; text-decoration: none; font-size: 13px; }
+        .sidebar nav a:hover, .sidebar nav a.active { background-color: #347FE3; }
+
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
+        header { background-color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .user-profile { font-size: 14px; color: #123F78; font-weight: 600; }
+        
+        .container { padding: 30px; }
+        .welcome-card { background: white; padding: 25px; border-radius: 12px; margin-bottom: 25px; box-shadow: 0 2px 6px rgba(18,63,120,0.04); }
+        .welcome-card h2 { color: #123F78; font-size: 22px; margin-bottom: 8px; }
+        .welcome-card p { color: #555; font-size: 14px; }
+
+        .grid-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; }
+        .card-menu { background: white; padding: 25px; border-radius: 12px; text-align: center; text-decoration: none; color: #123F78; font-weight: 600; box-shadow: 0 2px 6px rgba(18,63,120,0.04); transition: 0.2s; border: 1px solid #eaeaea; }
+        .card-menu:hover { background-color: #347FE3; color: white; transform: translateY(-3px); }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="brand">TutorConecta</div>
+        <nav>
+            <a href="/bienvenida?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}" class="active">Inicio</a>
+            <a href="/calificaciones?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}">Calificaciones</a>
+            <a href="/tareas?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}">Tareas</a>
+            <a href="/asistencia?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}">Asistencia</a>
+            <a href="/avisos?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}">Avisos</a>
+            <a href="/calendario?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}">Calendario</a>
+            <a href="/reportes?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}">Reportes</a>
+            <a href="/notificaciones?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}">Notificaciones</a>
+            {% if tipo == 'Administrativo' %}
+            <a href="/usuarios?usuario={{ usuario }}&tipo={{ tipo }}">Usuarios</a>
+            <a href="/respaldo">Respaldo BD</a>
+            {% endif %}
+            <a href="/" style="margin-top: 30px; color: #ff9999;">Cerrar sesion</a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <span style="font-size: 20px; color: #123F78; font-weight: 600;">Menu</span>
+            <div class="user-profile">Rol: {{ tipo }}</div>
+        </header>
+
+        <div class="container">
+            <div class="welcome-card">
+                <h2>Bienvenido, {{ usuario }}!</h2>
+                <p>
+                    {% if tipo == 'Docente' %}
+                        Panel Docente - Asignatura: <b>{{ materia }}</b>
+                    {% elif tipo == 'Padre de familia' %}
+                        Portal de Tutor - Alumno a cargo: <b>{{ hijo }}</b>
+                    {% else %}
+                        Panel general del sistema TutorConecta.
+                    {% endif %}
+                </p>
+            </div>
+
+            <div class="grid-menu">
+                <a href="/calificaciones?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}" class="card-menu">Calificaciones</a>
+                <a href="/asistencia?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}" class="card-menu">Asistencia</a>
+                <a href="/avisos?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}" class="card-menu">Avisos</a>
+                <a href="/tareas?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}" class="card-menu">Tareas</a>
+                <a href="/calendario?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}" class="card-menu">Calendario</a>
+                <a href="/reportes?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}" class="card-menu">Reportes</a>
+                <a href="/notificaciones?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}" class="card-menu">Notificaciones</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

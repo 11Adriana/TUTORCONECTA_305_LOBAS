@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestion de Usuarios - TutorConecta</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { display: flex; height: 100vh; background-color: #E4F2FF; }
+        .sidebar { width: 220px; background-color: #123F78; color: white; display: flex; flex-direction: column; padding: 20px 0; }
+        .sidebar .brand { font-size: 18px; font-weight: 600; padding: 0 20px 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .sidebar nav { margin-top: 15px; display: flex; flex-direction: column; }
+        .sidebar nav a { display: flex; align-items: center; gap: 10px; padding: 12px 20px; color: white; text-decoration: none; font-size: 13px; }
+        .sidebar nav a:hover, .sidebar nav a.active { background-color: #347FE3; }
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
+        header { background-color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .container { padding: 30px; }
+        h2 { color: #123F78; font-size: 20px; margin-bottom: 15px; }
+        .card { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 6px rgba(18,63,120,0.04); }
+        .card input, .card select { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; }
+        .btn { background-color: #123F78; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 10px 12px; text-align: left; font-size: 13px; border-bottom: 1px solid #eee; }
+        th { background-color: #E4F2FF; color: #123F78; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="brand">TutorConecta</div>
+        <nav>
+            <a href="/bienvenida?usuario={{ usuario }}&tipo={{ tipo }}">Inicio</a>
+            <a href="/calificaciones?usuario={{ usuario }}&tipo={{ tipo }}">Calificaciones</a>
+            <a href="/tareas?usuario={{ usuario }}&tipo={{ tipo }}">Tareas</a>
+            <a href="/asistencia?usuario={{ usuario }}&tipo={{ tipo }}">Asistencia</a>
+            <a href="/avisos?usuario={{ usuario }}&tipo={{ tipo }}">Avisos</a>
+            <a href="/calendario?usuario={{ usuario }}&tipo={{ tipo }}">Calendario</a>
+            <a href="/reportes?usuario={{ usuario }}&tipo={{ tipo }}">Reportes</a>
+            <a href="/notificaciones?usuario={{ usuario }}&tipo={{ tipo }}">Notificaciones</a>
+            <a href="/usuarios?usuario={{ usuario }}&tipo={{ tipo }}" class="active">Usuarios</a>
+            <a href="/respaldo">Respaldo BD</a>
+            <a href="/" style="margin-top: 30px; color: #ff9999;">Cerrar sesion</a>
+        </nav>
+    </div>
+    <div class="main-content">
+        <header>
+            <span style="font-size: 20px; color: #123F78;">Menu</span>
+            <div style="font-weight: 600; color: #123F78;">Rol: Administrativo</div>
+        </header>
+        <div class="container">
+            <h2>Modificacion de Datos de Usuarios (HU-15)</h2>
+            <div class="card">
+                <form method="POST">
+                    <label style="font-size: 12px; font-weight: 600;">Correo del Usuario a Editar:</label>
+                    <select name="correo_editar" required>
+                        {% for correo, datos in usuarios_db.items() %}
+                        <option value="{{ correo }}">{{ correo }} ({{ datos.nombre }})</option>
+                        {% endfor %}
+                    </select>
+                    <label style="font-size: 12px; font-weight: 600;">Nuevo Nombre:</label>
+                    <input type="text" name="nuevo_nombre" placeholder="Nombre completo" required>
+                    <label style="font-size: 12px; font-weight: 600;">Nuevo Rol:</label>
+                    <select name="nuevo_tipo" required>
+                        <option value="Padre de familia">Padre de familia</option>
+                        <option value="Alumno">Alumno</option>
+                        <option value="Docente">Docente</option>
+                        <option value="Administrativo">Administrativo</option>
+                    </select>
+                    <button type="submit" class="btn">Actualizar Usuario</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

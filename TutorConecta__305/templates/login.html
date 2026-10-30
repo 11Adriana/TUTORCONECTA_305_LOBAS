@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio de sesion - TutorConecta</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { background-color: #f0f4f8; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .main-card { display: flex; background: #ffffff; width: 750px; border-radius: 15px; box-shadow: 0 8px 24px rgba(18, 63, 120, 0.12); overflow: hidden; }
+        .login-section { flex: 1.2; padding: 40px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        .logo-container { margin-bottom: 20px; }
+        .logo-container h1 { color: #123F78; font-size: 22px; font-weight: 600; margin-top: 5px; }
+        .input-group { width: 100%; margin-bottom: 15px; text-align: left; }
+        .input-group input { width: 100%; padding: 12px 15px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; outline: none; }
+        .input-group input:focus { border-color: #347FE3; }
+        .btn-ingresar { width: 100%; padding: 12px; background-color: #347FE3; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.3s; }
+        .btn-ingresar:hover { background-color: #123F78; }
+        .links-container { margin-top: 15px; display: flex; flex-direction: column; gap: 8px; }
+        .links-container a { color: #347FE3; font-size: 13px; text-decoration: none; }
+        .links-container a:hover { text-decoration: underline; }
+        .error-msg { color: #ff4d4d; font-size: 12px; margin-bottom: 10px; }
+        .info-section { flex: 0.9; background-color: #E4F2FF; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px; text-align: center; }
+        .info-section h3 { color: #123F78; font-size: 16px; font-weight: 600; }
+        .info-section p { color: #123F78; font-size: 14px; margin-top: 5px; }
+    </style>
+</head>
+<body>
+    <div class="main-card">
+        <div class="login-section">
+            <div class="logo-container">
+                <h1>TutorConecta</h1>
+            </div>
+
+            {% if error %}
+                <p class="error-msg">{{ error }}</p>
+            {% endif %}
+
+            <form action="/autenticar" method="POST" style="width: 100%;">
+                <div class="input-group">
+                    <input type="text" name="usuario" placeholder="Correo (ej. alumno1@correo.com)" required>
+                </div>
+                <div class="input-group">
+                    <input type="password" name="password" placeholder="Contrasena (123)" required>
+                </div>
+                <button type="submit" class="btn-ingresar">Iniciar sesion</button>
+            </form>
+
+            <div class="links-container">
+                <a href="/recuperar">Olvidaste tu contrasena?</a>
+                <a href="/registro">No tienes cuenta? Registrate aqui</a>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h3>Escuela<br>Familia</h3>
+            <p>Siempre conectados</p>
+        </div>
+    </div>
+</body>
+</html>

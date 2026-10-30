@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tareas y actividades - TutorConecta</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { display: flex; height: 100vh; background-color: #E4F2FF; }
+        
+        .sidebar { width: 220px; background-color: #123F78; color: white; display: flex; flex-direction: column; padding: 20px 0; }
+        .sidebar .brand { font-size: 18px; font-weight: 600; padding: 0 20px 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .sidebar nav { margin-top: 15px; display: flex; flex-direction: column; }
+        .sidebar nav a { display: flex; align-items: center; gap: 10px; padding: 12px 20px; color: white; text-decoration: none; font-size: 13px; }
+        .sidebar nav a:hover, .sidebar nav a.active { background-color: #347FE3; }
+
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
+        header { background-color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .user-profile { font-size: 14px; color: #123F78; font-weight: 600; }
+        
+        .container { padding: 30px; }
+        .card-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .card-header-flex h2 { color: #123F78; font-size: 20px; }
+        
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid #ddd; padding-bottom: 10px; }
+        .tab { padding: 8px 20px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; color: #555; background: #f0f4f8; }
+        .tab.active { background-color: #E4F2FF; color: #347FE3; border: 1px solid #bde0fe; }
+
+        .tarea-card { background: white; padding: 15px 20px; border-radius: 12px; margin-bottom: 12px; box-shadow: 0 2px 6px rgba(18,63,120,0.04); display: flex; justify-content: space-between; align-items: center; border: 1px solid #eaeaea; }
+        .tarea-info h4 { color: #123F78; font-size: 14px; font-weight: 600; }
+        .tarea-info p { color: #555; font-size: 13px; margin-top: 2px; }
+
+        .badge-pendiente { background-color: #fff3cd; color: #856404; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .badge-realizada { background-color: #d4edda; color: #155724; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .badge-norealisada { background-color: #f8d7da; color: #721c24; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+
+        .form-docente { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 6px rgba(18,63,120,0.04); }
+        .form-docente input, .form-docente select { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="brand">TutorConecta</div>
+        <nav>
+            <a href="/bienvenida?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}">Inicio</a>
+            <a href="/calificaciones?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}">Calificaciones</a>
+            <a href="/tareas?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}" class="active">Tareas</a>
+            <a href="/asistencia?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}">Asistencia</a>
+            <a href="/avisos?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}">Avisos</a>
+            <a href="/calendario?usuario={{ usuario }}&tipo={{ tipo }}&hijo={{ hijo }}&materia={{ materia }}">Calendario</a>
+            <a href="/" style="margin-top: 30px; color: #ff9999;">Cerrar sesion</a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <span style="font-size: 20px; color: #123F78;">Menu</span>
+            <div class="user-profile">Rol: {{ tipo }} | Materia: {{ materia if materia else 'General' }}</div>
+        </header>
+
+        <div class="container">
+            <div class="card-header-flex">
+                <h2>Tareas y actividades</h2>
+            </div>
+
+            <div class="tabs">
+                <a href="#" class="tab active">Listado de Tareas</a>
+            </div>
+
+            {% if tipo == 'Docente' %}
+            <div class="form-docente">
+                <h3 style="color: #123F78; font-size: 15px; margin-bottom: 10px;">Registrar Tarea para {{ materia }}</h3>
+                <form method="POST">
+                    <input type="hidden" name="accion" value="crear">
+                    <label style="font-size: 12px; font-weight: 600; color: #123F78;">Asignar a Grupo o Alumno:</label>
+                    <select name="destinatario" required style="margin-top: 4px;">
+                        <option value="Grupo General">Todo el Grupo (General)</option>
+                        {% for alumno in alumnos_lista %}
+                            <option value="{{ alumno }}">{{ alumno }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <input type="text" name="titulo" placeholder="Descripcion de la tarea" required style="margin-top: 8px;">
+                    <input type="date" name="fecha_entrega" required>
+                    
+                    <label style="font-size: 12px; font-weight: 600; color: #123F78;">Estado de la Tarea:</label>
+                    <select name="estado" required style="margin-top: 4px; margin-bottom: 10px;">
+                        <option value="Por entregar">Por entregar</option>
+                        <option value="Realizada">Realizada</option>
+                        <option value="No realizada">No realizada</option>
+                    </select>
+
+                    <button type="submit" style="background-color: #123F78; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600;">Guardar Tarea</button>
+                </form>
+            </div>
+            {% endif %}
+
+            <div>
+                {% for tarea in tareas %}
+                <div class="tarea-card">
+                    <div class="tarea-info">
+                        <h4>{{ tarea.materia }} - <span style="color: #347FE3; font-size: 12px;">({{ tarea.get('destinatario', 'Grupo General') }})</span></h4>
+                        <p>{{ tarea.titulo }} (Entrega: {{ tarea.fecha_entrega }})</p>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        {% if tarea.get('estado') == 'Realizada' %}
+                            <span class="badge-realizada">Realizada</span>
+                        {% elif tarea.get('estado') == 'No realizada' %}
+                            <span class="badge-norealisada">No realizada</span>
+                        {% else %}
+                            <span class="badge-pendiente">Por entregar</span>
+                        {% endif %}
+
+                        <!-- Formulario para modificar estatus rápidamente -->
+                        <form method="POST" style="display: flex; gap: 5px; align-items: center;">
+                            <input type="hidden" name="accion" value="actualizar">
+                            <input type="hidden" name="tarea_id" value="{{ tarea.id }}">
+                            <select name="nuevo_estado" onchange="this.form.submit()" style="padding: 4px; font-size: 11px; border-radius: 4px; border: 1px solid #ccc;">
+                                <option value="" disabled selected>Cambiar...</option>
+                                <option value="Por entregar">Por entregar</option>
+                                <option value="Realizada">Realizada</option>
+                                <option value="No realizada">No realizada</option>
+                            </select>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

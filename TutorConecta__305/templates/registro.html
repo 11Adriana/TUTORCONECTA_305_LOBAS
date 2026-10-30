@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - TutorConecta</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { background-color: #E4F2FF; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 8px 24px rgba(18, 63, 120, 0.12); width: 100%; max-width: 420px; text-align: center; }
+        h2 { color: #123F78; margin-bottom: 5px; font-size: 22px; }
+        p.subtitle { color: #666; font-size: 13px; margin-bottom: 20px; }
+        .input-group { margin-bottom: 15px; text-align: left; }
+        .input-group label { display: block; font-size: 12px; font-weight: 600; color: #123F78; margin-bottom: 4px; }
+        .input-group input, .input-group select { width: 100%; padding: 10px 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 13px; outline: none; }
+        .btn { width: 100%; padding: 12px; background-color: #347FE3; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 10px; }
+        .btn:hover { background-color: #123F78; }
+        .back { display: block; margin-top: 15px; color: #347FE3; text-decoration: none; font-size: 13px; }
+        .back:hover { text-decoration: underline; }
+        .hijo-field { background: #f0f7ff; padding: 10px; border-radius: 8px; border: 1px dashed #347FE3; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Crear Cuenta</h2>
+        <p class="subtitle">Registrate para acceder a TutorConecta</p>
+
+        {% if mensaje %}
+            <p style="color: red; font-size: 12px; margin-bottom: 10px;">{{ mensaje }}</p>
+        {% endif %}
+
+        <form action="/registro" method="POST">
+            <div class="input-group">
+                <label>Nombre Completo</label>
+                <input type="text" name="nombre" placeholder="Ej. Roberto Gomez" required>
+            </div>
+
+            <div class="input-group">
+                <label>Correo Electronico</label>
+                <input type="email" name="correo" placeholder="ejemplo@correo.com" required>
+            </div>
+
+            <div class="input-group">
+                <label>Contrasena</label>
+                <input type="password" name="password" placeholder="Minimo 3 caracteres" required>
+            </div>
+
+            <div class="input-group">
+                <label>Tipo de Usuario (Rol)</label>
+                <select name="tipo" id="tipoUsuario" onchange="mostrarCampoHijo()" required>
+                    <option value="Padre de familia">Padre de familia / Tutor</option>
+                    <option value="Alumno">Alumno</option>
+                    <option value="Docente">Docente</option>
+                    <option value="Administrativo">Personal Administrativo</option>
+                </select>
+            </div>
+
+            <div class="input-group hijo-field" id="boxHijo">
+                <label>Nombre Completo de su Hijo(a)</label>
+                <input type="text" name="hijo" id="inputHijo" placeholder="Ej. Carlos Perez" value="">
+            </div>
+
+            <button type="submit" class="btn">Registrar Cuenta</button>
+        </form>
+
+        <a href="/" class="back">Volver al inicio de sesion</a>
+    </div>
+
+    <script>
+        function mostrarCampoHijo() {
+            var rol = document.getElementById("tipoUsuario").value;
+            var box = document.getElementById("boxHijo");
+            var input = document.getElementById("inputHijo");
+
+            if (rol === "Padre de familia") {
+                box.style.display = "block";
+                input.required = true;
+            } else {
+                box.style.display = "none";
+                input.required = false;
+            }
+        }
+    </script>
+</body>
+</html>
